@@ -1,0 +1,5 @@
+shit tits
+additions
+
+Error
+Sintaxis: tee [archivo1] [archivo2]

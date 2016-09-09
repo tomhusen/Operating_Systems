@@ -1,0 +1,31 @@
+Copy the 3 links in "Handouts/class examples" directory      <- Will have .h files and libraries that we need
+Create a master directory for this class and each program gets its own sub directory
+copy the "Makefile" into each new directory
+  within that Makefile we just copied and change GEN_EXE = 'name of new progarm (directory)'
+  Create a .c file for the program - (usually by copying an existing program)
+  Name the .c file the same as the directory its in
+If you have the "Makefile" in that directory you should be able to compile with just 'make' command
+
+
+main(int argc, char *argv[]){
+  if(argc != 2){
+    usageErr("%s <file name> \n)", argv[0]);
+  }
+
+  int fd, cc;
+  fd = open(argv[1], O_WRONLY);
+
+  if(fd == -1){
+    errMsg(" for open on file %s.\n", argv[1];
+  }
+  else {
+    fprintf(stderr, "Successfully opened file %s.\n", argv[1]);
+  }
+  cc = close(fd);
+  if(cc == -1){
+    errExit(" for close on file descriptor %d.\n", fd);
+  }
+  else {
+    fprintf(stderr, "Successfully closed file with file descriptor %d.\n", fd);
+  }
+}

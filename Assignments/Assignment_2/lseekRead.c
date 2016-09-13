@@ -6,12 +6,13 @@
 int main(int argc, char *argv[]){
 
   // Errors if there are not 3 inputs
-  if(argc != 3){
-    usageErr("%s <file name>\n", argv[0]);
+  if(argc < 3){
+    usageErr("%s ----- Error: Illegal number of inputs\n", argv[0]);
   }
   int fd, cc;
-  //attempts to open file
-  fd = open(argv[1], O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+
+  // Attempts to open file
+  fd = open(argv[1], O_RDONLY);
 
   // Errors if file could not be opened
   if (fd == -1){
@@ -19,53 +20,57 @@ int main(int argc, char *argv[]){
   }
   // Successfully opened file
   else{
-    fprintf(stderr, "Successfully opened file %s.\n", argv[1]);
+    fprintf(stderr, "Successfully opened file %s.\n\n", argv[1]);
 
-    // Converts string inputs for starting pos, and # of bytes to integers
     char *filename;
     filename = argv[1];
-    int s, n;
+    int s, n, numMove, numRead;
+
+    // Converts the Command Line arguments into integers
     s = atoi(argv[2]);
     n = atoi(argv[3]);
+    // Creates output buffer equal to size of the file
+    unsigned char outputBuffer[sizeof(s)];
 
-    // Errors if pointer could not be moved
-    if(lseek(filename, s, SEEK_SET) == -1){
-      fprintf(stderr, "Error moving pointer %s\n", argv[1]);
-    }
+    // Returns values for lseek() and read()
+    numMove = lseek(fd, s, SEEK_SET);
+    numRead = read(fd, outputBuffer, n);
 
-    int i;
-    while(currentPos < n && currentPos != EneOfFile){
-      i=0
-      while(i<64){
+    fflush(stdout);
+
+    write(1, outputBuffer, numRead);
+
+    printf("\n\nnumRead= %d\n", numRead);
+    printf("numMove= %d\n", numMove);
+    printf("filename= %s\n", filename);
+
+
+
+
+
+    //int i;
+    //while(currentPos < n && currentPos != EneOfFile){
+    //  i=0
+    //  while(i<64){
         // Print to Output
-      }
+  //    }
       // New line "\n"
       // update current Pos
-    }
-
-  }
 
 
-
-
-
-
-
-  int msg_len = strlen(msg);
-  int nwr;
-  nwr = write(fd, msg, msg_len);
 
   // Errors if couldn't write to the file
-  if(nwr == -1){
-    errMsg(" couldn't write to the file %s, \n", argv[1]);
-  }
-  else {
-    fprintf(stderr, "Wrote %d bytes to file %s\n", nwr, argv[1]);
-  }
-}
+//  if(nwr == -1){
+//    errMsg(" couldn't write to the file %s, \n", argv[1]);
+//  }
+//  else {
+//    fprintf(stderr, "Wrote %d bytes to file %s\n", nwr, argv[1]);
+//  }
+
 
   // Close file
   cc = close(fd);
+}
   // Errors if file could not be closed
   if (cc == -1){
     errExit(" for close on file descriptor %d.\n", fd);

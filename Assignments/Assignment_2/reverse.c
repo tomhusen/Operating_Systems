@@ -6,13 +6,13 @@
 int main(int argc, char *argv[]){
 
   // Errors if there are not 3 inputs
-  if(argc < 3){
+  if(argc < 2){
     usageErr("%s ----- Error: Illegal number of inputs\n", argv[0]);
   }
   int fd, cc;
 
   // Attempts to open file
-  fd = open(argv[1], O_RDONLY);
+  fd = open(argv[1], O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
 
   // Errors if file could not be opened
   if (fd == -1){
@@ -22,55 +22,29 @@ int main(int argc, char *argv[]){
   else{
     fprintf(stderr, "Successfully opened file %s.\n\n", argv[1]);
 
-    char *filename;
+    // Assigns variables to inputs
+    char *filename, *rname;
+    int numMove, numRead, fileSize;
     filename = argv[1];
-    int s, n, numMove, numRead;
+    rname = argv[2];
+    fileSize = sizeof(filename);
 
-    // Converts the Command Line arguments into integers
-    s = atoi(argv[2]);
-    n = atoi(argv[3]);
+
     // Creates output buffer equal to size of the file
-    unsigned char outputBuffer[sizeof(s)];
+    unsigned char outputBuffer[fileSize];
 
-    // Returns values for lseek() and read()
-    numMove = lseek(fd, s, SEEK_SET);
-    numRead = read(fd, outputBuffer, n);
+    // Gets size in bytes
+    numMove = lseek(fd, 0, SEEK_END);
+    numRead = read(fd, outputBuffer, fileSize);
 
     fflush(stdout);
 
-    write(1, outputBuffer, numRead);
+    write(1, outputBuffer, fileSize);
 
-    printf("\n\nnumRead= %d\n", numRead);
-    printf("numMove= %d\n", numMove);
-    printf("filename= %s\n", filename);
+    // Close file
+    cc = close(fd);
+  }
 
-
-
-
-
-    //int i;
-    //while(currentPos < n && currentPos != EneOfFile){
-    //  i=0
-    //  while(i<64){
-        // Print to Output
-  //    }
-      // New line "\n"
-      // update current Pos
-
-
-
-  // Errors if couldn't write to the file
-//  if(nwr == -1){
-//    errMsg(" couldn't write to the file %s, \n", argv[1]);
-//  }
-//  else {
-//    fprintf(stderr, "Wrote %d bytes to file %s\n", nwr, argv[1]);
-//  }
-
-
-  // Close file
-  cc = close(fd);
-}
   // Errors if file could not be closed
   if (cc == -1){
     errExit(" for close on file descriptor %d.\n", fd);

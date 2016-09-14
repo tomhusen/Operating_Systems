@@ -22,7 +22,6 @@ int main(int argc, char *argv[]){
   else{
     fprintf(stderr, "Successfully opened file %s.\n\n", argv[1]);
 
-    // Formats inputs, and declares some variables
     char *filename;
     filename = argv[1];
     int s, n, numMove, numRead;
@@ -36,19 +35,42 @@ int main(int argc, char *argv[]){
     // Returns values for lseek() and read()
     numMove = lseek(fd, s, SEEK_SET);
     numRead = read(fd, outputBuffer, n);
-    // Forces it to standard output
+
     fflush(stdout);
-    // Writes the buffer out to standard output
+
     write(1, outputBuffer, numRead);
 
-    // Output for reference
     printf("\n\nnumRead= %d\n", numRead);
     printf("numMove= %d\n", numMove);
     printf("filename= %s\n", filename);
-    cc = close(fd);
-  }
 
 
+
+
+
+    //int i;
+    //while(currentPos < n && currentPos != EneOfFile){
+    //  i=0
+    //  while(i<64){
+        // Print to Output
+  //    }
+      // New line "\n"
+      // update current Pos
+
+
+
+  // Errors if couldn't write to the file
+//  if(nwr == -1){
+//    errMsg(" couldn't write to the file %s, \n", argv[1]);
+//  }
+//  else {
+//    fprintf(stderr, "Wrote %d bytes to file %s\n", nwr, argv[1]);
+//  }
+
+
+  // Close file
+  cc = close(fd);
+}
   // Errors if file could not be closed
   if (cc == -1){
     errExit(" for close on file descriptor %d.\n", fd);

@@ -25,7 +25,7 @@ int main(int argc, char *argv[]){
     // Formats inputs, and declares some variables
     char *filename;
     filename = argv[1];
-    int s, n, numMove, numRead;
+    int s, n, numMove, numRead, numRem;
 
     // Converts the Command Line arguments into integers
     s = atoi(argv[2]);
@@ -33,18 +33,37 @@ int main(int argc, char *argv[]){
     // Creates output buffer equal to size of the file
     unsigned char outputBuffer[sizeof(s)];
 
-    // Returns values for lseek() and read()
     numMove = lseek(fd, s, SEEK_SET);
-    numRead = read(fd, outputBuffer, n);
-    // Forces it to standard output
+    // Forces standard output
     fflush(stdout);
-    // Writes the buffer out to standard output
-    write(1, outputBuffer, numRead);
+    // Will keep track of number of char read
+    int count = 0;
+    // How many characters remaining
+    numRem = n;
+    /* This loop works by checking if there are characters remaining to be read.
+    if there are, then it checks if there are less than 64 of them. If there are
+    less than 64 remaining then it will just read those 0-64 and output them. If
+    there are more than 64, it will read up to 64, output those, and then decrement
+    the number remaining by the amount it was able to read. If it cannot read
+    anymore characters or it reaches the end of the file it will exit the while */
+    while(numRem > 0){
+      if(numRem <= 64) n = numRem;
+      if(numRem > 64) n = 64;
+      numRead = read(fd, outputBuffer, n);
+      if(numRead > 0){
+        write(1, outputBuffer, numRead);
+        printf("\n");
+        count += numRead;
+      }
+      numRem -= numRead;
+      if(numRead == 0) numRem = 0;
+    }
 
     // Output for reference
-    printf("\n\nnumRead= %d\n", numRead);
-    printf("numMove= %d\n", numMove);
-    printf("filename= %s\n", filename);
+    printf("\n\n\n**** INFO BELOW FOR REFERENCE ONLY ****\n");
+    printf("**** Number of bytes read = %d\n", count);
+    printf("**** Number of bytes moved = %d\n", numMove);
+    printf("**** Name of file = %s\n", filename);
     cc = close(fd);
   }
 

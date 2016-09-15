@@ -5,14 +5,14 @@
 // Takes 3 inputs: filename, starting byte position, # of bytes to read
 int main(int argc, char *argv[]){
 
-  // Errors if there are not 3 inputs
+  // Errors if there are not 2 inputs
   if(argc < 2){
     usageErr("%s ----- Error: Illegal number of inputs\n", argv[0]);
   }
   int fd, cc;
 
   // Attempts to open file
-  fd = open(argv[1], O_WRONLY | O_CREAT | O_EXCL, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH);
+  fd = open(argv[1], O_RDONLY);
 
   // Errors if file could not be opened
   if (fd == -1){
@@ -27,18 +27,27 @@ int main(int argc, char *argv[]){
     int numMove, numRead, fileSize;
     filename = argv[1];
     rname = argv[2];
-    fileSize = sizeof(filename);
+
+    // Gets size in bytes
+    fileSize = lseek(fd, 0, SEEK_END);
+    lseek(fd, 0, SEEK_SET);
+    char* buffer[];
+    buffer = malloc(fileSize);
+    numRead = read(fd, buffer, fileSize);
+    cc = close(fd);
+
+
+
+
+
+
 
 
     // Creates output buffer equal to size of the file
     unsigned char outputBuffer[fileSize];
-
-    // Gets size in bytes
-    numMove = lseek(fd, 0, SEEK_END);
     numRead = read(fd, outputBuffer, fileSize);
 
     fflush(stdout);
-
     write(1, outputBuffer, fileSize);
 
     // Close file

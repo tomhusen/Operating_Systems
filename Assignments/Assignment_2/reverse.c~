@@ -13,7 +13,7 @@ int main(int argc, char *argv[]){
 
   // Attempts to open file
   	fd = open(argv[1], O_RDWR);
-   outFile = open(argv[2], O_RDWR);
+   outFile = fopen(argv[2], "w+");
 
   // Errors if file could not be opened
   if (fd == -1){
@@ -35,10 +35,10 @@ int main(int argc, char *argv[]){
     buf = outBuffer;
     printf("Reversed File: \n");
     
-    for(buf+=fileSize;buf>=outBuffer; buf--){  // Print traversing backwards    	printf("%c", *buf);
-      fprintf(outFile, *buf);
-    }
-    write(outFile, buf, fileSize);
+    for(buf+=fileSize;buf>=outBuffer; buf--)  // Print traversing backwards    
+    printf("%c", *buf);
+    printf(outFile, "%c", *buf);
+    write(outFile, outBuffer, fileSize);
 	 
 	 
 	 

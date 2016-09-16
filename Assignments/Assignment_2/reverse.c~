@@ -36,9 +36,9 @@ int main(int argc, char *argv[]){
     printf("Reversed File: \n");
     
     for(buf+=fileSize;buf>=outBuffer; buf--){  // Print traversing backwards    	printf("%c", *buf);
-      //fprintf(outFile, *buf);
+      fprintf(outFile, *buf);
     }
-    //write(outFile, buf, fileSize);
+    write(outFile, buf, fileSize);
 	 
 	 
 	 

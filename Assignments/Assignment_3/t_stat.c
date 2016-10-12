@@ -20,9 +20,10 @@
    The '-l' option indicates that lstat() rather than stat() should be used.
 */
 
-// ****************
+// *******************************************
 // Last edited by: Thomas Husen - October 2016
-// ****************
+// *******************************************
+
 
 #include <sys/sysmacros.h>
 #if defined(_AIX)
@@ -39,8 +40,7 @@
 #include "file_perms.h"
 #include "tlpi_hdr.h"
 
-static void
-displayStatInfo(const struct stat *sb)
+static void displayStatInfo(const struct stat *sb)
 {
     printf("File type:                ");
 
@@ -71,7 +71,7 @@ displayStatInfo(const struct stat *sb)
 
     printf("Number of (hard) links:   %ld\n", (long) sb->st_nlink);
 
-    printf("Ownership:                UID=%ld   GID=%ld\n",
+    printf("Ownership:                UID=%ld   GID=%ld\n GID=%ld",
             (long) sb->st_uid, (long) sb->st_gid);
 
     if (S_ISCHR(sb->st_mode) || S_ISBLK(sb->st_mode))

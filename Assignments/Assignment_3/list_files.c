@@ -20,9 +20,11 @@
 
     Usage: list_files [dir...]
 */
-// ****************
+
+// *******************************************
 // Last edited by: Thomas Husen - October 2016
-// ****************
+// *******************************************
+
 
 #if defined(__APPLE__)
         /* Darwin requires this header before including <dirent.h> */

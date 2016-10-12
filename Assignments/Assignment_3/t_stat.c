@@ -35,10 +35,12 @@
 #if defined(__hpux)                             /* Other systems need this */
 #include <sys/mknod.h>
 #endif
+#include <pwd.h>
+#include <grp.h>
 #include <sys/stat.h>
 #include <time.h>
-#include "file_perms.h"
-#include "tlpi_hdr.h"
+#include "../../tlpi-dist/files/file_perms.h"
+#include "../../tlpi-dist/lib/tlpi_hdr.h"
 
 static void displayStatInfo(const struct stat *sb)
 {
@@ -71,10 +73,18 @@ static void displayStatInfo(const struct stat *sb)
 
     printf("Number of (hard) links:   %ld\n", (long) sb->st_nlink);
 
-    // added Username and Group Name stuff (st_uName and st_gName)
-    // Need to check if these variable names are correct and/or how to get them
-    printf("Ownership:                UID=%ld   Username=%s \n GID=%ld  Group Name=%s",
-            (long) sb->st_uid, (char*) sb->st_uName, (long) sb->st_gid, (char*) sb->st_gName);
+    /* This section uses different structs to get the username and group name */
+    struct group *grp;
+    struct passwd *pwd;
+    // Gets Group Name
+    grp = getgrgid(sb->st_gid);
+    // printf("group: %s\n", grp->gr_name);
+    // Gets Username
+    pwd = getpwuid(sb->st_uid);
+    // printf("username: %s\n", pwd->pw_name);
+
+    printf("Ownership:                UID=%ld     Username= %s\n                          GID=%ld     Group Name= %s\n",
+    (long) sb->st_uid, pwd->pw_name, (long) sb->st_gid, grp->gr_name);
 
     if (S_ISCHR(sb->st_mode) || S_ISBLK(sb->st_mode))
         printf("Device number (st_rdev):  major=%ld; minor=%ld\n",

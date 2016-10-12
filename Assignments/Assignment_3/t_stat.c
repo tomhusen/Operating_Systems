@@ -71,8 +71,10 @@ static void displayStatInfo(const struct stat *sb)
 
     printf("Number of (hard) links:   %ld\n", (long) sb->st_nlink);
 
-    printf("Ownership:                UID=%ld   GID=%ld\n GID=%ld",
-            (long) sb->st_uid, (long) sb->st_gid);
+    // added Username and Group Name stuff (st_uName and st_gName)
+    // Need to check if these variable names are correct and/or how to get them
+    printf("Ownership:                UID=%ld   Username=%s \n GID=%ld  Group Name=%s",
+            (long) sb->st_uid, (char*) sb->st_uName, (long) sb->st_gid, (char*) sb->st_gName);
 
     if (S_ISCHR(sb->st_mode) || S_ISBLK(sb->st_mode))
         printf("Device number (st_rdev):  major=%ld; minor=%ld\n",
@@ -87,8 +89,12 @@ static void displayStatInfo(const struct stat *sb)
     printf("Last status change:       %s", ctime(&sb->st_ctime));
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
+/* Within here, will need to first figure out how many arguments there are
+   (how many files we want to get stats for) and then using a loop run the
+   function displayStatInfo that many times and output all of that information
+   */
+
 {
     struct stat sb;
     Boolean statLink;           /* True if "-l" specified (i.e., use lstat) */
@@ -110,7 +116,11 @@ main(int argc, char *argv[])
             errExit("stat");
     }
 
-    displayStatInfo(&sb);
+    // Loop to execute the function argc number of times
+    for (int i = 0; i < argc; i++){
+      // Don't call on same file everytime, change the parameters each loop
+      displayStatInfo(&sb);
+    }
 
     exit(EXIT_SUCCESS);
 }

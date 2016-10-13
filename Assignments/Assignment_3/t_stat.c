@@ -97,40 +97,43 @@ static void displayStatInfo(const struct stat *sb)
     printf("Last file access:         %s", ctime(&sb->st_atime));
     printf("Last file modification:   %s", ctime(&sb->st_mtime));
     printf("Last status change:       %s", ctime(&sb->st_ctime));
+    printf("\n\n");
 }
 
 int main(int argc, char *argv[])
 /* Within here, will need to first figure out how many arguments there are
    (how many files we want to get stats for) and then using a loop run the
    function displayStatInfo that many times and output all of that information
-   */
+   */{
 
-{
-    struct stat sb;
-    Boolean statLink;           /* True if "-l" specified (i.e., use lstat) */
-    int fname;                  /* Location of filename argument in argv[] */
+    for (int i = 1; i < argc+1; i++){
 
-    statLink = (argc > 1) && strcmp(argv[1], "-l") == 0;
-                                /* Simple parsing for "-l" */
-    fname = statLink ? 2 : 1;
+      struct stat sb;
+      Boolean statLink;           /* True if "-l" specified (i.e., use lstat) */
+      int fname;                  /* Location of filename argument in argv[] */
 
-    if (fname >= argc || (argc > 1 && strcmp(argv[1], "--help") == 0))
-        usageErr("%s [-l] file\n"
-                "        -l = use lstat() instead of stat()\n", argv[0]);
+      statLink = (argc > 1) && strcmp(argv[i], "-l") == 0;
+                                  /* Simple parsing for "-l" */
+      fname = i;
 
-    if (statLink) {
-        if (lstat(argv[fname], &sb) == -1)
-            errExit("lstat");
-    } else {
-        if (stat(argv[fname], &sb) == -1)
-            errExit("stat");
+      if (fname >= argc || (argc > 1 && strcmp(argv[i], "--help") == 0))
+          usageErr("%s [-l] file\n"
+                  "        -l = use lstat() instead of stat()\n", argv[0]);
+
+      if (statLink) {
+          if (lstat(argv[fname], &sb) == -1)
+              errExit("lstat");
+      } else {
+          if (stat(argv[fname], &sb) == -1)
+              errExit("stat");
+      }
+
+        // Prints the name of the file at the top of all the stats
+        printf("File Name:                %s\n", argv[i]);
+        // Gets the stats for this specific file
+        displayStatInfo(&sb);
     }
 
-    // Loop to execute the function argc number of times
-    for (int i = 0; i < argc; i++){
-      // Don't call on same file everytime, change the parameters each loop
-      displayStatInfo(&sb);
-    }
-
+    // Exit Condition
     exit(EXIT_SUCCESS);
 }

@@ -34,8 +34,9 @@
 #include "tlpi_hdr.h"
 
 static void             /* List all files in directory 'dirpath' */
-listFiles(const char *dirpath)
+listFiles(const char *dirpath, Boolean hidden)
 {
+    // printf("listFiles Function Boolean: %d\n\n", hidden);
     DIR *dirp;
     struct dirent *dp;
     Boolean isCurrent;          /* True if 'dirpath' is "." */
@@ -49,19 +50,29 @@ listFiles(const char *dirpath)
     }
 
     /* For each entry in this directory, print directory + filename */
-
+    printf("\nFiles in directory: %s\n", dirpath);
     for (;;) {
         errno = 0;              /* To distinguish error from end-of-directory */
         dp = readdir(dirp);
         if (dp == NULL)
             break;
 
-        if (strcmp(dp->d_name, ".") == 0 || strcmp(dp->d_name, "..") == 0)
+        char *fileName = dp->d_name;
+
+        /* Only executes if there is no -a option. So by default will show only
+        files that are not hidden - by default . and .. are also not displayed */
+        if(hidden == 0){
+          // test = 1 if the file is hiddden
+          int test = (fileName[0] == '.' && strcmp(fileName, ".") != 0 && strcmp(fileName, "..") != 0);
+          //printf("Test Return Value: %i\n", test);
+          if (strcmp(fileName, ".") == 0 || strcmp(fileName, "..") == 0 || test == 1){
             continue;           /* Skip . and .. */
+          }
+        }
 
         if (!isCurrent)
             printf("%s/", dirpath);
-        printf("%s\n", dp->d_name);
+        printf("%s\n", fileName);
     }
 
     if (errno != 0)
@@ -71,17 +82,44 @@ listFiles(const char *dirpath)
         errMsg("closedir");
 }
 
-int
-main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
-    if (argc > 1 && strcmp(argv[1], "--help") == 0)
-        usageErr("%s [dir-path...]\n", argv[0]);
+  /* Initilize the 'showHidden' boolean to false. This boolean represents if
+  the -a option has been passed */
+  Boolean showHidden = 0;
+  //printf("Number of arguments = %i\n", argc);
 
-    if (argc == 1)              /* No arguments - use current directory */
-        listFiles(".");
-    else
-        for (argv++; *argv; argv++)
-            listFiles(*argv);
+  if (argc > 3 && strcmp(argv[1], "--help") == 0){
+    usageErr("%s [dir-path...]\n", argv[0]);
+  }
 
-    exit(EXIT_SUCCESS);
+  if (argc == 1){         /* No arguments - use current directory */
+    listFiles(".", showHidden);
+}
+
+  /* If -a is passed as the first argument then we will show hidden files */
+  if (strcmp(argv[1], "-a") == 0){
+    showHidden = 1;
+    //printf("-a loop = %d\n", showHidden);
+    if (argc == 2){       /* If the only argument is -a, use current directory */
+      listFiles(".", showHidden);
+    }
+    // if the -a is activated and there's more parameters
+    else {
+      for(int i = 2; i < argc; i++){
+        listFiles(argv[i], showHidden);
+    }
+  }
+}
+
+  else{
+    for (argv++; *argv; argv++)
+        listFiles(*argv, showHidden);
+
+    /*for(int i = 2; i < argc; i++){
+      listFiles(argv[i], showHidden);
+    } */
+  }
+
+  exit(EXIT_SUCCESS);
 }

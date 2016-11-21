@@ -1,7 +1,6 @@
 include ../Makefile.inc
 
-GEN_EXE = ThomasHusen_Assignment_2
-
+GEN_EXE = ThomasHusen_Assignment_5
 LINUX_EXE =
 
 EXE = ${GEN_EXE} ${LINUX_EXE}

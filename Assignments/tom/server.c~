@@ -1,0 +1,39 @@
+/*
+	This is the function that will be called by main() if the program is going to run in
+	server mode. It will be passed (by main()) the pathname for where to create its FIFO
+*/
+int serverMode(const char *pathName) {
+		// Make a RWX FIFO @ this pathname
+		int serverFIFO = mkfifo(pathName, 0777);
+		char * clientFifo;
+		// Continues if FIFO creation successful
+		if (serverFIFO < 0) {
+			printf("Problem creating FIFO - serverMode \n");
+			exit(-1);
+		}
+		printf("Successfully created serverMode FIFO! \n");
+		
+		
+		//	Attempts to 
+			openServerFIFO = open(serverFIFO, open it's own FIFO in read only.
+			Once the client opens 'my' FIFO, they will write their
+			FIFO which I'll then read
+		//		
+		int fifo_server, fifo_client;
+		printf("Welcome to the chat - server! \n\n");
+		char buf[512];		
+		
+		// Open the fifo_server
+		fifo_server = open(pathName, O_RDONLY, O_NONBLOCK);
+		if(fifo_server < 1){
+			printf("Problem when trying to open fifo_server \n");		
+		}
+		FILE *fd = fdopen(fifo_server, "r");
+		fgets(clientFifo, 256, fd);
+		printf("Client FIFO Path: %s\n", clientFifo);
+		
+
+	}
+
+	exit(EXIT_SUCCESS);
+}
